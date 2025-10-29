@@ -6,6 +6,6 @@
     <title>Examen Dwes tema 2</title>
 </head>
 <body>
-    
+    <form action="patata.php"></form>
 </body>
 </html>
