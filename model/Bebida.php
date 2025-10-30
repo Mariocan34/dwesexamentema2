@@ -10,5 +10,25 @@ class Bebida extends Articulo {
         $this->size = $size;
         $this->temperatura = $temperatura;
     }
+
+    public function getsize() {
+        return $this->size;
+    }
+
+    public function setsize(string $size) {
+        $this->size = $size;
+    }
+
+    public function getTemperatura() {
+        return $this->temperatura;
+    }
+
+    public function setTemperatura(string $temperatura){
+        $this->temperatura = $temperatura;
+    }
+
+    public function __toString() {
+       return "$this->nombre . $this->precio";
+    }
 }
 ?>

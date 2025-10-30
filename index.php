@@ -1,7 +1,7 @@
 <?php
 // TODO Importar las clases
-require 'Articulo.php';
-require 'Bebida.php';
+require 'model/Articulo.php';
+require 'model/Bebida.php';
 // Array asociativo del menú
 $menu = [
     new Articulo("Ensalada César", 8.50, true, "Entrante"),
@@ -33,10 +33,12 @@ $ubicaciones = [
     ]
 ];
 
-$pedido = ["Ensalada César", "Pizza Margarita", "Café"];
-
 // TODO Filtrar platos por disponibilidad, guardando en variable $disponibles
-$disponibles =
+$disponibles =array_filter($menu, function($articulo) {
+    return $articulo->disponibilidad;
+});
+
+$pedido = ["Ensalada César", "Pizza Margarita", "Café", "Gambas"];
 
 //////////////////////////////
 //        FUNCIONES         //
@@ -44,38 +46,99 @@ $disponibles =
 
 // TODO Función para imprimir una lista de artículos con nombre y precio
 function imprimirListaArticulos($articulos){
-
+    //recorremos la lista
+    foreach ($articulos as $articulo) {
+        //imprimimos el articulo
+         echo "<li>$articulo</li>\n"; 
+    }
 }
 
 // TODO Función para imprimir un pedido
 function imprimirPedido($pedido, $menu) {
+    $total = 0;
+    
+    // Convertir el menú en un array asociativo (nombre => objeto) para búsqueda rápida
+    $menuAsociativo = [];
+    foreach ($menu as $articulo) {
+        $menuAsociativo[$articulo->nombre] = $articulo;
+    }
+    //creamos la tabla con su cabecera articulo y precio
+    echo "<table >";
+    echo "<tr>
+            <th>Artículo</th>
+            <th>Precio</th>
+          </tr>";
+    //recorremos la array
+    foreach ($pedido as $nombre) {
+        echo "<tr>";
+        echo "<td>$nombre</td>";
+        
+        if (isset($menuAsociativo[$nombre])) {
+            $articulo = $menuAsociativo[$nombre];
+            
+            if ($articulo->disponibilidad) {
+                // Te muestra el rpecio y
+                echo "<td>€" . $articulo->precio . "</td>";
+                $total += $articulo->precio;
+            } else {
+                // Te muestra no disponible si no esta disponible
+                echo "<td>No disponible</td>";
+            }
+        } else {
+            // Mensaje de no se encuentra en el menu
+            echo "<td>No encontrado en el menú</td>";
+        }
+        echo "</tr>";
+    }
 
+    // Fila del total del precio
+    echo "<tr>
+            <td><strong>Total</strong></td>
+            <td><strong>€" . $total . "</strong></td>
+          </tr>";
+    echo "</table>";
 }
+
 
 // TODO Función para imprimir las ubicaciones
 function imprimirUbicaciones($ubicaciones) {
-
+    echo "<ul>";
+    foreach ($ubicaciones as $nombre => $datos) {
+        // Formato: Nombre: Dirección. Teléfono: X. Horario: Y
+         echo  "<li><strong>$nombre</strong>:" . $datos["direccion"] . ". Teléfono: " . $datos["telefono"] . ". Horario: " .$datos["horario"] . "</li>\n";
+    }
+    echo "</ul>";
 }
 
 ?>
-
-<h2>Menú Completo:</h2>
-<ul>
-    <?php imprimirListaArticulos($menu); ?>
-</ul>
-
-
-<h2>Platos disponibles:</h2>
-<ul>
-    <?php imprimirListaArticulos($disponibles); ?>
-</ul>
-
-
-<h2>Pedido realizado:</h2>
-<?php
-imprimirPedido($pedido, $menu);
-?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen dwes tema 2</title>
+</head>
+    <body>
+        <h2>Menú Completo:</h2>
+    <ul>
+        <?php imprimirListaArticulos($menu); ?>
+    </ul>
 
 
-<h2>Ubicaciones de Recogida:</h2>
-<?php imprimirUbicaciones($ubicaciones); ?>
+    <h2>Platos disponibles:</h2>
+    <ul>
+        <?php imprimirListaArticulos($disponibles); ?>
+    </ul>
+
+
+    <h2>Pedido realizado:</h2>
+    <?php
+    imprimirPedido($pedido, $menu);
+    ?>
+
+
+    <h2>Ubicaciones de Recogida:</h2>
+    <?php imprimirUbicaciones($ubicaciones); ?>
+</body>
+</html>
+
